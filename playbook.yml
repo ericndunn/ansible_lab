@@ -1,0 +1,65 @@
+---
+- hosts: "all"
+  gather_facts: true
+  roles: [ansible_lab]
+  remote_user: ericndunn
+  vars:
+  vars_files: [ansible_lab/vars/main.yml]
+  become: yes
+
+# - hosts: all 
+#   become: yes 
+#   remote_user: ericndunn
+#   vars:
+#     - password: '$6$rounds=656000$WzrIuOjJb2nnUb7Z$GpzH167XZU/uujBW49EzrUeWoPH9jR3pV1RDmD6Bt2CmhND29IlYv70kg4X3RDUPrlo5cGXL7A2VFC34HTEFs0'
+#   tasks:
+
+# # created with:
+#   #  python -c "from passlib.hash import sha512_crypt; print sha512_crypt.encrypt('<password>')"
+#   # above command requires the PassLib library: sudo pip install passlib    
+
+#     - name: Create a login user
+#       user:
+#         name: ericndunn
+#         password: "{{ password }}"
+#         groups:
+#           - root
+#         state: present
+#         shell: /bin/bash       
+#         system: no             
+#         createhome: yes       
+#         home: /home/ericndunn
+#       when: ansible_user == "root"   
+
+#     - name: Add user ericndunn to wheel group
+#       user:
+#         name: ericndunn
+#         groups: wheel
+#         append: yes
+#       when: ansible_user == "root"
+
+#     - name: Get env
+#       setup: 
+#       register: env_stuff
+#     - debug: msg="{{ env_stuff }}" 
+
+#     - name: Install apache packages 
+#       yum:
+#         name: httpd
+#         state: present
+
+#     - name: ensure httpd is running
+#       service:
+#         name: httpd 
+#         state: started
+
+#     - name: Open port 80 for http access
+#       firewalld:
+#         service: http
+#         permanent: true
+#         state: enabled
+
+#     - name: Restart the firewalld service to load in the firewall changes
+#       service: 
+#         name: firewalld 
+#         state: restarted      

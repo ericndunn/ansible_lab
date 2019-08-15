@@ -1,0 +1,52 @@
+---
+# tasks file for ansible_lab
+- name: Create a login user
+  user:
+    name: ericndunn
+    password: "{{ ansible_become_pass }}"
+    groups:
+      - root
+    state: present
+    shell: /bin/bash       
+    system: no             
+    createhome: yes       
+    home: /home/ericndunn
+  when: ansible_user == "root"   
+
+- name: Add user ericndunn to wheel group
+  user:
+    name: ericndunn
+    groups: wheel
+    append: yes
+  when: ansible_user == "root"
+
+- name: Get env
+  setup: 
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  register: env_stuff
+- debug: msg="{{ env_stuff }}" 
+
+- name: Install apache packages 
+  yum:
+    name: httpd
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'  
+
+- name: ensure httpd is running
+  service:
+    name: httpd 
+    state: started
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'    
+
+- name: Open port 80 for http access
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Restart the firewalld service to load in the firewall changes
+  service: 
+    name: firewalld 
+    state: restarted      
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'   
